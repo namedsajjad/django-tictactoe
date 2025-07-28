@@ -3,7 +3,6 @@ from django.contrib.auth import logout, login, authenticate
 from django.shortcuts import render, redirect
 from .models import Player, Game
 
-@login_required
 def index(request):
     return render(request, 'game/index.html')
 
