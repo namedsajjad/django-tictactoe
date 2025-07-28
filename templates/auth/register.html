@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}
+REGISTER
+{% endblock title %}
+
+{% block style %}
+<style>
+.container {
+    width: 400px; /* Adjust this value as needed */
+    padding: 20px;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+input[type="text"], input[type="email"], input[type="password"] {
+    width: 300px; /* Match the width of the login inputs */
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    placeholder-color: #999; /* Change placeholder color to match your design */
+}
+
+button {
+    width: 200px; /* Match the width of the login button */
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+</style>
+{% endblock style %}
+
+{% block content %}
+<div class="container">
+    <form action="{% url 'register' %}" method="post">
+        {% csrf_token %}
+        <h1>Register</h1>
+        <input type="text" id="username" name="username" required placeholder="Username">
+        <br>
+        <input type="email" id="email" name="email" required placeholder="Email">
+        <br>
+        <input type="password" id="password1" name="password1" required placeholder="Password">
+        <br>
+        <input type="password" id="password2" name="password2" required placeholder="Confirm Password">
+        <br>
+        <button type="submit">Register</button>
+    </form>
+    <br>
+    <a href="{% url 'login' %}">Or <strong>Login</strong></a>
+</div>
+{% endblock content %}

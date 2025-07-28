@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}
+HOME
+{% endblock title %}
+
+
+{% block content %}
+{% if request.user.is_authenticated %}
+<h1>Welcome, {{ request.user.username }} !</h1>
+<h3><a href="">New Game</a></h3>
+<h3><a href="">Continue</a></h3>
+<h3><a href="">Leaderborad</a></h3>
+<h3><a href="{% url "logout" %}">Logout</a></h3>
+{% else %}
+<h1>Welcome!</h1>
+<h3><a href="">New Game</a></h3>
+<h3><a href="{% url "login" %}">Login/Register</a></h3>
+{% endif %}
+{% endblock content %}
