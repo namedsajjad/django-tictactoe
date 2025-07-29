@@ -127,3 +127,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'\
 
 # Custom User Model
 AUTH_USER_MODEL = 'game.Player'
+
+# Redirect URL after successful login
+LOGIN_REDIRECT_URL = '/'
+
+# Redirect URL for login page
+LOGIN_URL = '/login/'

@@ -3,7 +3,6 @@ from django.contrib.auth import logout, login, authenticate
 from django.shortcuts import render, redirect
 from .models import Player, Game
 
-@login_required
 def index(request):
     return render(request, 'game/index.html')
 
@@ -49,3 +48,15 @@ def logout_view(request):
     print("Logging out user:", request.user.username)
     logout(request)
     return redirect('index')
+
+from django.db.models import F
+# The F object is a way to refer to model field values directly in queries. It allows you to perform operations on fields without having to retrieve the values first.
+def leaderboard(request):
+    players = Player.objects.annotate(
+        total_games=F('wins') + F('draws') + F('losses')
+    ).order_by('-wins', 'draws', 'losses')
+
+    context = {
+        'players': players
+    }
+    return render(request, 'game/leaderboard.html', context)

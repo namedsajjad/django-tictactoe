@@ -1,1 +1,74 @@
 {% extends "base.html" %}
+
+{% block style %}
+* {
+    text-align: center;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #ffffff; /* Changed to a valid hex color */
+}
+
+h1, h2, h3 {
+    color: #333;
+}
+
+a {
+    text-decoration: none;
+    color: #000000; /* Changed to a valid hex color */
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th, td {
+    padding: 10px;
+    border: 1px solid #ddd;
+}
+
+th {
+    background-color: #f2f2f2;
+    color: #333;
+}
+
+tr:hover {
+    background-color: #f5f5f5; /* Highlight row on hover */
+}
+
+{% endblock style %}
+
+{% block content %}
+<h1>Leaderboard</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Player</th>
+                <th>Wins</th>
+                <th>Draws</th>
+                <th>Losses</th>
+                <th>Total Games</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for player in players %}
+            <tr>
+                <td>{{ player.username }}</td>
+                <td>{{ player.wins }}</td>
+                <td>{{ player.draws }}</td>
+                <td>{{ player.losses }}</td>
+                <td>{{ player.total_games }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock content %}
