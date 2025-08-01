@@ -1,1 +1,24 @@
 {% extends "base.html" %}
+
+{% block title %}
+GAME {{game_id}}
+{% endblock title %}
+
+
+{% block content %}
+
+<p>Turn: {{current_turn}} </p>
+
+<a href="{% url "move" game_id 0 %}"><button>{{ board|slice:":1"|last }}</button></a>
+<a href="{% url "move" game_id 1 %}"><button>{{ board|slice:":2"|last }}</button></a>
+<a href="{% url "move" game_id 2 %}"><button>{{ board|slice:":3"|last }}</button></a>
+<br>
+<a href="{% url "move" game_id 3 %}"><button>{{ board|slice:":4"|last }}</button></a>
+<a href="{% url "move" game_id 4 %}"><button>{{ board|slice:":5"|last }}</button></a>
+<a href="{% url "move" game_id 5 %}"><button>{{ board|slice:":6"|last }}</button></a>
+<br>
+<a href="{% url "move" game_id 6 %}"><button>{{ board|slice:":7"|last }}</button></a>
+<a href="{% url "move" game_id 7 %}"><button>{{ board|slice:":8"|last }}</button></a>
+<a href="{% url "move" game_id 8 %}"><button>{{ board|slice:":9"|last }}</button></a>
+
+{% endblock content %}

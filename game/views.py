@@ -1,6 +1,10 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout, login, authenticate
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
+from django.http import HttpResponseForbidden
+import random
+from django.utils import timezone
+from datetime import timedelta
 from .models import Player, Game
 
 def index(request):
@@ -60,3 +64,61 @@ def leaderboard(request):
         'players': players
     }
     return render(request, 'game/leaderboard.html', context)
+
+@login_required
+def new_game(request):
+    players = Player.objects.filter(last_game_player__isnull=True)
+    player_o = random.choice(players)
+
+    game = Game.objects.create(
+        player_x=request.user,
+        player_o=player_o,
+        current_turn=request.user
+    )
+    request.user.last_game_player = game
+    request.user.save()
+    player_o.last_game_player = game
+    player_o.save()
+
+    return redirect('game', game_id=game.id)
+
+@login_required
+def game(request, game_id):
+    game = get_object_or_404(Game, id=game_id)
+    ctx = {
+        'game_id': game_id,
+        'board' : game.board,
+        'current_turn': game.current_turn
+    }
+    return render(request, 'game/game.html', ctx)
+
+@login_required
+def move(request, game_id, move_id):
+    player = request.user
+    game = get_object_or_404(Game, id=game_id)
+
+    if game.last_move_by.username == player.username or game.is_finished:
+        return HttpResponseForbidden("Not Today!")
+
+
+    board_list = list(game.board)
+
+    if player.username == game.player_o.username:
+        print(game.player_o.username)
+        player == game.player_o.username
+        board_list[move_id] = 'O'
+        game.last_move_by = request.user
+        game.current_turn = game.player_x
+    else:
+        print(game.player_x.username)
+        player == game.player_x.username
+        board_list[move_id] = 'X'
+        game.last_move_by = request.user
+        game.current_turn = game.player_o
+
+    
+    game.board = ''.join(board_list)
+    game.save()
+
+    print(board_list[move_id])
+    pass
