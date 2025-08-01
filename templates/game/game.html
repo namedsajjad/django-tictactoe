@@ -1,13 +1,30 @@
 {% extends "base.html" %}
 
 {% block title %}
-GAME {{game_id}}
+GAME {{game_id}} | {{request.user}}
 {% endblock title %}
 
 
 {% block content %}
+    <style>
+        button {
+            width: 100px;
+            height: 100px;
+            font-size: 50px;
+            border: none;
+            border-radius: 10px;
+        }
+    </style>
 
-<p>Turn: {{current_turn}} </p>
+{% if game.is_finished %}
+<h1>Winner is <br>  <strong>🎉{{game.winner}}🎉</strong> </h1>
+{% else %}
+    {% if current_turn == request.user %}
+    <h1>Your turn!</h1>
+    {% else %}
+    <h1>Opponent's Turn: {{current_turn}} </h1>
+    {% endif %}
+{% endif %}
 
 <a href="{% url "move" game_id 0 %}"><button>{{ board|slice:":1"|last }}</button></a>
 <a href="{% url "move" game_id 1 %}"><button>{{ board|slice:":2"|last }}</button></a>
@@ -20,5 +37,15 @@ GAME {{game_id}}
 <a href="{% url "move" game_id 6 %}"><button>{{ board|slice:":7"|last }}</button></a>
 <a href="{% url "move" game_id 7 %}"><button>{{ board|slice:":8"|last }}</button></a>
 <a href="{% url "move" game_id 8 %}"><button>{{ board|slice:":9"|last }}</button></a>
+<br><br><br>
+{% if game.is_finished %}
+<a href="{% url "new_game" %}">New game?</a>
+{% endif %}
+    <script>
+        // Function to refresh the page every 5 seconds
+        setInterval(function() {
+            location.reload();
+        }, 1000); // 5000 milliseconds = 5 seconds
+    </script>
 
 {% endblock content %}

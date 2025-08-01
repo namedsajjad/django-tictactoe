@@ -1,7 +1,8 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout, login, authenticate
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import HttpResponseForbidden
+from django.http import HttpResponseForbidden, HttpResponse
+from django.urls import reverse
 import random
 from django.utils import timezone
 from datetime import timedelta
@@ -67,7 +68,8 @@ def leaderboard(request):
 
 @login_required
 def new_game(request):
-    players = Player.objects.filter(last_game_player__isnull=True)
+    # players = Player.objects.filter(last_game_player__isnull=True)
+    players = Player.objects.all()
     player_o = random.choice(players)
 
     game = Game.objects.create(
@@ -87,6 +89,7 @@ def game(request, game_id):
     game = get_object_or_404(Game, id=game_id)
     ctx = {
         'game_id': game_id,
+        'game' : game,
         'board' : game.board,
         'current_turn': game.current_turn
     }
@@ -97,28 +100,31 @@ def move(request, game_id, move_id):
     player = request.user
     game = get_object_or_404(Game, id=game_id)
 
-    if game.last_move_by.username == player.username or game.is_finished:
+    if game.last_move_by == player or game.is_finished:
         return HttpResponseForbidden("Not Today!")
 
-
     board_list = list(game.board)
-
-    if player.username == game.player_o.username:
-        print(game.player_o.username)
-        player == game.player_o.username
-        board_list[move_id] = 'O'
-        game.last_move_by = request.user
-        game.current_turn = game.player_x
-    else:
-        print(game.player_x.username)
-        player == game.player_x.username
-        board_list[move_id] = 'X'
-        game.last_move_by = request.user
-        game.current_turn = game.player_o
-
     
-    game.board = ''.join(board_list)
-    game.save()
+    if player.username == game.player_o.username:
+        if board_list[move_id] == '-':
+            board_list[move_id] = 'O'
+            game.last_move_by = request.user
+            game.current_turn = game.player_x
+        else:
+            return HttpResponseForbidden("Already peaked!")
+    else:
+        if board_list[move_id] == '-':
+            board_list[move_id] = 'X'
+            game.last_move_by = request.user
+            game.current_turn = game.player_o
+        else:
+            return HttpResponseForbidden("Already peaked!")
 
-    print(board_list[move_id])
-    pass
+    game.board = ''.join(board_list)
+    winner = game.check_winner()
+    
+    if winner:
+        return HttpResponse("Winner is: "+ winner.username + "🎉")
+    else:
+        game.save()
+        return redirect(reverse('game', kwargs={'game_id': game_id}))
